@@ -39,8 +39,7 @@ public class MakeMoveCommand implements Command {
         }
     }
 
-    @Override
-    public String aggregateId() {
+    public String getGameId() {
         return gameId;
     }
 

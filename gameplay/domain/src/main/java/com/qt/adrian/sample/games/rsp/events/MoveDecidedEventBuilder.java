@@ -14,7 +14,7 @@ public class MoveDecidedEventBuilder extends EventBuilder<MoveDecidedEventBuilde
         super(MoveDecidedEventBuilder.class);
     }
 
-    private MoveDecidedEventBuilder newInstance() {
+    public static MoveDecidedEventBuilder newInstance() {
         return new MoveDecidedEventBuilder();
     }
 
