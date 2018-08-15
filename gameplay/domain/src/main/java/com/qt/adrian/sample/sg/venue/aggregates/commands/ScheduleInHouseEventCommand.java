@@ -1,4 +1,4 @@
-package com.qt.adrian.sample.sg.venue.aggregates;
+package com.qt.adrian.sample.sg.venue.aggregates.commands;
 
 import com.qt.adrian.sample.sg.venue.vo.Admission;
 import com.qt.adrian.sample.sg.venue.vo.Theme;

@@ -18,7 +18,7 @@ public final class Event {
 
     Event(final EventBuilder builder) {
         this.aggregateId = Objects.requireNonNull(
-                builder.getAggregateId(), "Aggregate Id required");
+                builder.getAggregateId(), "Aggregate Id required").stringValue();
         this.payload = builder.getPayload();
         this.aggregateName = Objects.requireNonNull(
                 builder.getAggregateName(), "Aggregate name required");

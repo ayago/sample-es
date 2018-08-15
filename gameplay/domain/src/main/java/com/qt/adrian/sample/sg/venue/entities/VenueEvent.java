@@ -4,7 +4,7 @@ import com.qt.adrian.sample.commons.Entity;
 import com.qt.adrian.sample.sg.venue.vo.Theme;
 import com.qt.adrian.sample.sg.venue.vo.Type;
 
-public class Event extends Entity<EventId> {
+public class VenueEvent extends Entity<EventId> {
 
     private String name;
 
@@ -12,7 +12,7 @@ public class Event extends Entity<EventId> {
 
     private Type type;
 
-    public Event(EventId id) {
+    public VenueEvent(EventId id) {
         super(id);
     }
 
@@ -20,7 +20,7 @@ public class Event extends Entity<EventId> {
         return name;
     }
 
-    public Event setName(String name) {
+    public VenueEvent setName(String name) {
         this.name = name;
         return this;
     }
@@ -29,7 +29,7 @@ public class Event extends Entity<EventId> {
         return theme;
     }
 
-    public Event setTheme(Theme theme) {
+    public VenueEvent setTheme(Theme theme) {
         this.theme = theme;
         return this;
     }
@@ -38,7 +38,7 @@ public class Event extends Entity<EventId> {
         return type;
     }
 
-    public Event setType(Type type) {
+    public VenueEvent setType(Type type) {
         this.type = type;
         return this;
     }

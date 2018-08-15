@@ -1,7 +1,13 @@
 package com.qt.adrian.sample.commons;
 
 public interface EventuallyConsistentAggregateFactory<
-        PROP_BUILDER, AGGREGATE extends EventuallyConsistentAggregate<?>> {
+        FACTORY_ARGS, AGGREGATE extends EventuallyConsistentAggregate<?>> {
 
-    AGGREGATE create(PROP_BUILDER propertiesBuilder, EventPublisher eventPublisher);
+    default AGGREGATE create(FACTORY_ARGS propertiesBuilder, EventPublisher eventPublisher) {
+        throw new UnsupportedOperationException("Method not supported");
+    }
+
+    default AGGREGATE create(EventPublisher eventPublisher) {
+        throw new UnsupportedOperationException("Method not supported");
+    }
 }

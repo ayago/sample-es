@@ -2,11 +2,11 @@ package com.qt.adrian.sample.commons;
 
 import java.util.Objects;
 
-public abstract class EventBuilder <C extends EventBuilder<C>> {
+public abstract class EventBuilder <C extends EventBuilder<C, AID>, AID extends EntityId<?>> {
 
     private String author;
 
-    private String aggregateId;
+    private AID aggregateId;
 
     private final Class<C> clazz;
 
@@ -14,7 +14,7 @@ public abstract class EventBuilder <C extends EventBuilder<C>> {
         this.clazz  = Objects.requireNonNull(clazz, "Builder subtype required");
     }
 
-    String getAggregateId() {
+    AID getAggregateId() {
         return aggregateId;
     }
 
@@ -33,7 +33,7 @@ public abstract class EventBuilder <C extends EventBuilder<C>> {
         return clazz.cast(this);
     }
 
-    public C setAggregateId(String aggregateId) {
+    public C setAggregateId(AID aggregateId) {
         this.aggregateId = aggregateId;
         return clazz.cast(this);
     }

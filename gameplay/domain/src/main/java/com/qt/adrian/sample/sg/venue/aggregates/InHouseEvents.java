@@ -1,66 +1,55 @@
 package com.qt.adrian.sample.sg.venue.aggregates;
 
-import com.qt.adrian.sample.commons.Aggregate;
-import com.qt.adrian.sample.sg.venue.entities.Event;
+import com.qt.adrian.sample.commons.Event;
+import com.qt.adrian.sample.commons.EventPublisher;
+import com.qt.adrian.sample.commons.EventuallyConsistentAggregate;
+import com.qt.adrian.sample.sg.venue.aggregates.commands.UpdateInHouseEventCommand;
+import com.qt.adrian.sample.sg.venue.aggregates.events.InHouseEventUpdatedEventBuilder;
+import com.qt.adrian.sample.sg.venue.entities.VenueEvent;
 import com.qt.adrian.sample.sg.venue.entities.EventId;
-import com.qt.adrian.sample.sg.venue.vo.Admission;
-import com.qt.adrian.sample.sg.venue.vo.Theme;
-import com.qt.adrian.sample.sg.venue.vo.TimeSlots;
-import com.qt.adrian.sample.sg.venue.vo.Type;
+import com.qt.adrian.sample.sg.venue.vo.*;
 import com.qt.adrian.sample.sg.venue.entities.Venue;
-import com.qt.adrian.sample.sg.venue.entities.VenueId;
 
 import java.time.LocalDate;
 
-public class InHouseEvents extends Aggregate<Event> {
+public class InHouseEvents extends EventuallyConsistentAggregate<VenueEvent> {
 
-    private VenueId venue;
-    private TimeSlots timeSlots;
-    private Admission admission;
-
-    private InHouseEvents(Event event) {
-        super(event);
+    private InHouseEvents(VenueEvent venueEvent, EventPublisher eventPublisher) {
+        super(venueEvent, eventPublisher);
     }
 
-    public static Builder newBuilder(){
-        return new Builder();
+    public static Builder newBuilder(EventPublisher eventPublisher){
+        return new Builder(eventPublisher);
     }
 
-    //events: InHouseEventUpdatedEvemt
-    public InHouseEvents updateEvent(Venue venue, String name, Theme theme){
-        Event event = this.getAggregateRoot();
-        event.setName(name).setType(Type.IN_HOUSE).setTheme(theme);
-        return this;
-    }
+    //events: InHouseEventUpdatedEvent
+    public RecordedEvents updateEvent(UpdateInHouseEventCommand command){
+        this.getAggregateRoot().setName(command.getName()).setTheme(command.getTheme());
 
+        Event event = InHouseEventUpdatedEventBuilder.newInstance()
+                .setAggregateId(getAggregateRoot().getId())
+                .setAdmission(command.getAdmission())
+                .setName(command.getName())
+                .setTimeSlots(command.getTimeSlots())
+                .build();
+
+        getEventPublisher().publishEvents(event);
+
+        return new RecordedEvents(this.getAggregateRoot(), EventStatus.DRAFT);
+    }
 
     public static class Builder {
         private LocalDate localDate;
-        private Venue venue;
-        private Admission admission;
-        private TimeSlots timeSlots;
         private Theme theme;
         private String name;
+        private final EventPublisher eventPublisher;
 
-        private Builder() {}
+        private Builder(EventPublisher eventPublisher) {
+            this.eventPublisher = eventPublisher;
+        }
 
         public Builder setLocalDate(LocalDate localDate) {
             this.localDate = localDate;
-            return this;
-        }
-
-        public Builder setVenue(Venue venue) {
-            this.venue = venue;
-            return this;
-        }
-
-        public Builder setAdmission(Admission admission) {
-            this.admission = admission;
-            return this;
-        }
-
-        public Builder setTimeSlots(TimeSlots timeSlots) {
-            this.timeSlots = timeSlots;
             return this;
         }
 
@@ -75,12 +64,9 @@ public class InHouseEvents extends Aggregate<Event> {
         }
 
         public InHouseEvents build(){
-            Event event = new Event(new EventId(localDate.toString()))
+            VenueEvent venueEvent = new VenueEvent(new EventId(localDate.toString()))
                     .setName(name).setType(Type.IN_HOUSE).setTheme(theme);
-            InHouseEvents eventAggregate = new InHouseEvents(event);
-            eventAggregate.timeSlots = this.timeSlots;
-            eventAggregate.admission = this.admission;
-            return eventAggregate;
+            return new InHouseEvents(venueEvent, eventPublisher);
         }
     }
 }
